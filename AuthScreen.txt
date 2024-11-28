@@ -1,0 +1,32 @@
+const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+                const user = userCredential.user
+                
+                const newUser = new UserModel(
+                    user.uid, 
+                    name, 
+                    email, 
+                    password, 
+                    avatar, 
+                    gender, 
+                    age, 
+                    weight, 
+                    height, 
+                    physicalLevel, 
+                    activityLevel, 
+                    injuries,
+                )
+
+                // Guardar los datos del usuario en Firestore
+                await addDoc(collection(dbFirebase, 'users'), {
+                    id: newUser.id,
+                    name: newUser.name,
+                    email: newUser.email,
+                    avatar: newUser.avatar,
+                    gender: newUser.gender,
+                    age: newUser.age,
+                    weight: newUser.weight,
+                    height: newUser.height,
+                    physicalLevel: newUser.physicalLevel,
+                    activityLevel: newUser.activityLevel,
+                    injuries: newUser.injuries,
+                })

@@ -1,0 +1,38 @@
+export default function AuthScreen(props) {
+    const [registering, setRegistering] = useState(false)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [avatar, setAvatar] = useState('')
+    const [gender, setGender] = useState('')
+    const [age, setAge] = useState(0)
+    const [weight, setWeight] = useState(0)
+    const [height, setHeight] = useState(0)
+    const [physicalLevel, setPhysicalLevel] = useState('')
+    const [activityLevel, setActivityLevel] = useState('')
+    const [injuries, setInjuries] = useState([])
+    
+    const authentication = async() => {
+        
+        if(registering){
+            try{
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+                const user = userCredential.user
+                
+                const newUser = {
+                    id: user.uid,
+                    name: name,
+                    email: email,
+                    avatar: avatar,
+                    gender: gender,
+                    age: age,
+                    weight: weight,
+                    height: height,
+                    physicalLevel: physicalLevel,
+                    activityLevel: activityLevel,
+                    injuries: injuries,
+                }  
+            }
+        }
+    }
+}

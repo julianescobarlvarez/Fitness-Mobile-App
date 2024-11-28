@@ -1,0 +1,7 @@
+assets //guarda las imagenes y videos
+models //guarda los modelos
+repository //guarda las funciones/lógica de negocios
+responsive //guarda las funciones para adaptación de pantallas
+screens //guarda la parte visual
+screens-state //guarda los estados para mostrar screen en base a lógica de negocios
+style //guarda los estilos de las screens
