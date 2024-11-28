@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WelcomeScreen from './app/screens/WelcomeScreen'
-//import CreateNote from './screens/CreateNote'
+import CreateNote from './screens/CreateNote'
 import HomeScreen from './app/screens/HomeScreen'
 import AuthScreen from './app/screens/AuthScreen'
 
