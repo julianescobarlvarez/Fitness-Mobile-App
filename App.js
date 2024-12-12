@@ -1,81 +1,20 @@
-import 'react-native-gesture-handler'
-import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import WelcomeScreen from './app/screens/WelcomeScreen'
-import CreateNote from './screens/CreateNote'
-import HomeScreen from './app/screens/HomeScreen'
-import AuthScreen from './app/screens/AuthScreen'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import MainNavigation from './app/navigation/MainNavigation'
+import * as NavigationBar from 'expo-navigation-bar'
 
-export default function App() {
-  
-  const Stack = createStackNavigator();
-  const Tab = createBottomTabNavigator();
-
-  function MyStack(){
-    return(
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{
-            title:"La Home Page",
-            headerTitleAlign:"center",
-            headerStyle:{backgroundColor: "#881874"},
-            headerTintColor:"white",
-            animationEnabled: false,
-            cardStyleInterpolator: ({}) => {
-              return {
-                cardStyle: {
-                  opacity: 1,
-                },
-              };
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Auth"
-          component={AuthScreen}
-          options={{
-            title:"Registro y Login",
-            headerTitleAlign:"center",
-            headerStyle:{backgroundColor: "#881874"},
-            headerTintColor:"white",
-            animationEnabled: false,
-            cardStyleInterpolator: ({}) => {
-              return {
-                cardStyle: {
-                  opacity: 1,
-                },
-              };
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title:"Pantalla principal",
-            headerTitleAlign:"center",
-            headerStyle:{backgroundColor: "#881874"},
-            headerTintColor:"white",
-            animationEnabled: false,
-            cardStyleInterpolator: ({}) => {
-              return {
-                cardStyle: {
-                  opacity: 1,
-                },
-              };
-            },
-          }}
-        />
-      </Stack.Navigator>
-    );
-  }
-  
-  return (
-    <NavigationContainer>
-      <MyStack/>
-    </NavigationContainer>
-  );
+export default function App() {    
+    //Cambio en color de la barra de navegación (Solo funciona en Android)
+    NavigationBar.setBackgroundColorAsync('#f5f5f5') 
+    NavigationBar.setButtonStyleAsync('dark') 
+    
+    //Contiene una área segura del contenido, la navegación de pantallas y tabs
+    return (
+        <SafeAreaProvider>
+            <NavigationContainer>
+                <MainNavigation/>
+            </NavigationContainer>
+        </SafeAreaProvider>
+    )
 }
