@@ -1,0 +1,85 @@
+            try{
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+                Alert.alert('Éxito', 'Registro exitoso');
+                const user = userCredential.user
+
+                //Se guardan solo el id y el email, el password se encarga Firebase Authr
+                const newUser = {
+                    id: user.uid,
+                    email: user.email,
+                    name: '',
+                    gender: '',
+                    avatar: ''
+                }   
+
+                //Guardar los datos del usuario en Firestore
+                await addDoc(collection(dbFirebase, 'users'),{
+                    ...newUser
+                })
+            } catch (error){
+                // Verifica el tipo de error para mostrar el mensaje correspondiente
+                if (error.code === 'auth/weak-password') {
+                    Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+                } else if (error.code === 'auth/email-already-in-use') {
+                    Alert.alert('Error', 'Este correo electrónico ya está en uso');
+                } else if (error.code === 'auth/invalid-email') {
+                    Alert.alert('Error', 'El correo electrónico no es válido');
+                } 
+            }
+
+
+
+
+
+
+
+
+            // Obtener los datos del usuario desde Firestore
+    useEffect(() => {
+        const fetchUserData = async () => {
+        const userRef = doc(dbFirebase, 'users', auth.currentUser.uid);  // Suponiendo que usas el UID del usuario autenticado
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+            setUser(userDoc.data());
+        } else {
+            console.log('No such document!');
+        }
+        setLoading(false);
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        if (!loading && user) {
+            // Verifica si el nombre o la edad están vacíos
+            if (!user.name || !user.age) {
+                // Si están vacíos, navega a la pantalla correspondiente
+                props.navigation.navigate('userRegister', { screen: 'name' });
+            }
+        }
+    }, [user, loading]);
+        
+    if (loading) {
+        return <Text>Cargando...</Text>;
+    }
+
+
+
+
+
+
+
+     useEffect(() => {
+        // Verifica si ya tienes un nombre guardado en el usuario
+        const fetchUserData = async () => {
+            const userRef = doc(dbFirebase, 'users', auth.currentUser.uid);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) {
+                setName(userDoc.data().name || '');  // Si ya existe, puedes mostrar el nombre previo
+            }
+        };
+    
+        fetchUserData();
+    }, []);

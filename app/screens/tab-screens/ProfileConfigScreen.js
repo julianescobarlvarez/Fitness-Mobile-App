@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, Image } from 'react-native'
-import { auth } from '../../../.expo/credentials'
+import { auth, dbFirebase } from '../../../.expo/credentials'
 import { signOut } from 'firebase/auth'
+import { collection, getDocs } from 'firebase/firestore'
 
 export default function ProfileConfigScreen() {
 
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente');
         } catch (error) {
             console.error("Error al cerrar sesión: ", error);
             Alert.alert('Error', 'Hubo un error al cerrar sesión');
@@ -20,7 +20,7 @@ export default function ProfileConfigScreen() {
             <View
                 style={{
                     alignItems: 'center',
-                    marginTop: 30,
+                    marginTop: 20,
                     marginBottom: 20
                 }}
             >
@@ -39,17 +39,7 @@ export default function ProfileConfigScreen() {
                         fontSize: 20
                     }}>Angelo</Text>
             </View>
-            <View style={styles.challengeContainer}>
-                <Text style={{
-                    textAlign: 'center'
-                }}>'Desafíos completados'</Text>
-            </View>
             <View style={styles.container2}>
-                <Pressable onPress={handleSignOut} style={styles.buttonContainer}>
-                    <Text style={{
-                        textAlign: 'center'
-                    }}>Editar perfil</Text>
-                </Pressable>
                 <Pressable onPress={handleSignOut} style={styles.buttonContainer2}>
                     <Text style={{
                         textAlign: 'center'
@@ -63,14 +53,22 @@ export default function ProfileConfigScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
-        backgroundColor: '#f5f5f5'
-
+        backgroundColor: '#f5f5f5',
     },
     challengeContainer: {
         backgroundColor: 'white',
         marginHorizontal: 15,
         padding: 20,
         borderRadius: 10,
+    },
+    challengeSubContainer: {
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        paddingHorizontal: 15, 
+        padding: 15, 
+        marginTop: 15, 
+        justifyContent: 'space-between', 
+        paddingBottom: 0
     },
     container2: {
         flexDirection: 'row',
@@ -90,5 +88,11 @@ const styles = StyleSheet.create({
         marginTop: 15,
         padding: 20,
         borderRadius: 10,
+    },
+    medalContainer: {
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        paddingHorizontal: 35, 
+        justifyContent: 'space-between'
     }
 });

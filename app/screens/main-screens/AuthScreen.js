@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState} from 'react'
-import { auth } from '../../../.expo/credentials'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { addDoc, collection } from 'firebase/firestore' 
+import { auth, dbFirebase } from '../../../.expo/credentials'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth' //cambiar
+//import axios from 'axios'
 
 export default function AuthScreen(props) {
     const [registering, setRegistering] = useState(false)
@@ -12,12 +14,27 @@ export default function AuthScreen(props) {
     const authentication = async() => {
         
         if(registering){
+            //Para verificar el registro del usuario    
             try{
-                props.navigation.navigate('userRegister', { email: email, password: password })
+                props.navigation.navigate('userRegister', {
+                    screen: 'name',
+                    params: {
+                        email: email,
+                        password: password
+                    }
+                })
             } catch (error){
-                Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres')
+                // Verifica el tipo de error para mostrar el mensaje correspondiente
+                if (error.code === 'auth/weak-password') {
+                    Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+                } else if (error.code === 'auth/email-already-in-use') {
+                    Alert.alert('Error', 'Este correo electrónico ya está en uso');
+                } else if (error.code === 'auth/invalid-email') {
+                    Alert.alert('Error', 'El correo electrónico no es válido');
+                } 
             }
         } else{
+            //Para verificar el inicio de sesión del usuario
             try{
                 await signInWithEmailAndPassword(auth, email, password)
                 //Alert.alert('Iniciando...', 'accediendo al sistema')

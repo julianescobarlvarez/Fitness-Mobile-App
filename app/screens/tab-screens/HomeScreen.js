@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, ScrollView, Image, ImageBackground, BackHandler } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useFocusEffect } from '@react-navigation/native';
+import { collection, doc, getDocs } from 'firebase/firestore' 
+import { auth, dbFirebase } from '../../../.expo/credentials'
 
 export default function HomeScreen(props) {
-
+    const [list, setList] = useState([])
+    const [challenge1, setChallenge1] = useState(false)
+    const [challenge2, setChallenge2] = useState(false)
+    const [challenge3, setChallenge3] = useState(false)
+    const [challenge4, setChallenge4] = useState(false)
+    const [challenge5, setChallenge5] = useState(false)
+    const [challenge6, setChallenge6] = useState(false)
+    const [challenge7, setChallenge7] = useState(false)
+    const [challenge8, setChallenge8] = useState(false)
+    const [challenge9, setChallenge9] = useState(false)
+    
     // Usar useFocusEffect para que el evento solo esté activo cuando esta pantalla esté enfocada
     useFocusEffect(
         React.useCallback(() => {
@@ -22,6 +35,32 @@ export default function HomeScreen(props) {
         }, [])
     );
 
+    // Obtener valores de medallas de desafío desde Firestore
+        useEffect(() => {
+            const getChallenges = async() => {
+                try {
+                    const querysnapshot = await getDocs(collection(dbFirebase, 'challenges'))
+                    const docs = []
+    
+                    querysnapshot.forEach((doc)=>{
+                        const { state } = doc.data()
+    
+                        docs.push({
+                            id: doc.id,
+                            state: state,
+                        })
+                    })
+                    setList(docs)
+                } catch (error) {
+                    console.log(error)
+                }
+            };
+            getChallenges();
+        }, []);
+
+    const handleChallenge1 = () => {
+
+    }
     //Se mostrará un resumen gráfico del plan del usuario (si existe)
     //Se mostrará una recomendación para crear un plan (si no existe)
     return (
@@ -50,63 +89,6 @@ export default function HomeScreen(props) {
                         </View>
                     </ImageBackground>
                 </Pressable>
-                <Text style={styles.title2}>DESAFÍOS</Text>
-                <Text style={styles.textTitle2}>Principiante</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Caminata Diaria (7 días)</Text>
-                        <Text>Camina 30 minutos al día durante 7 días consecutivos</Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Flexiones de Rodillas (5 días)</Text>
-                        <Text>Realiza 3 series de 10 flexiones de rodillas al día durante 5 días seguidos</Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Abdominales Básicos (7 días)</Text>
-                        <Text>Haz 3 series de 12 abdominales básicos al día durante 7 días consecutivos</Text>
-                    </View>
-                </ScrollView>
-                <Text style={styles.textTitle2}>Intermedio</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Sentadillas (10 días)</Text>
-                        <Text>Realiza 3 series de 15 sentadillas al día durante 10 días</Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Plancha (5 días)</Text>
-                        <Text>Mantén una plancha por 30 segundos, 3 veces al día durante 5 días consecutivos</Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Cardio Rápido (7 días)</Text>
-                        <Text>
-                            Realiza 20 minutos de actividad cardiovascular moderada (como trotar, saltar la cuerda, 
-                            bicicleta estática) durante 7 días
-                        </Text>
-                    </View>
-                </ScrollView>
-                <Text style={styles.textTitle2}>Avanzado</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={styles.container3}>
-                        <Text>Desafío de HIIT (5 días)</Text>
-                        <Text>
-                            Realiza una rutina de entrenamiento de intervalos de alta intensidad (HIIT) de 20 minutos,
-                            5 días consecutivos
-                        </Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Sentadillas con Salto (10 días)</Text>
-                        <Text>
-                            Realiza 4 series de 15 sentadillas con salto cada día durante 10 días consecutivos
-                        </Text>
-                    </View>
-                    <View style={styles.container3}>
-                        <Text>Desafío de Flexiones Avanzadas (7 días)</Text>
-                        <Text>
-                            Realiza 4 series de 15 flexiones avanzadas (pueden ser flexiones con palmada o flexiones declinadas) 
-                            al día durante 7 días
-                        </Text>
-                    </View>
-                </ScrollView>
                 <View style={styles.container4}></View>
             </ScrollView>
             <View 
@@ -141,10 +123,22 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
-        marginRight: 15
+        marginRight: 15,
+        justifyContent: 'center',
+        alignItems: 'center', 
+        width: '340'
     },
     container4: {
         marginBottom: 90
+    },
+    container5: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        marginRight: 5,
+        justifyContent: 'center',
+        alignItems: 'center', 
+        width: '350'
     },
     button: {
         position: 'absolute', 
@@ -194,4 +188,11 @@ const styles = StyleSheet.create({
         padding: 15,
         fontWeight: 'bold',
     },
+    titleContain: {
+        fontWeight: 'bold', 
+        fontSize: 18
+    },
+    textContain: {
+        fontSize: 16
+    }
 });

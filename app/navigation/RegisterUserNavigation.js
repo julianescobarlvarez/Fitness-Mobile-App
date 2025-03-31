@@ -6,27 +6,22 @@ import RegisterService from '../repository/RegisterService'
 
 const Stack = createStackNavigator()
 
-export default function RegisterUserNavigation(props){
-    const { email, password } = props.route.params
-    
+export default function RegisterUserNavigation(){
+
     return(
         <Stack.Navigator>
             <Stack.Screen
                 name="name"
                 component={NameScreen}
-                initialParams={{ email, password }}
             />
             <Stack.Screen
                 name="gender"
                 component={GenderScreen}
-                initialParams={{ email, password }}
             />
             <Stack.Screen
                 name="registerService"
                 component={RegisterService}
-                initialParams={{ email, password }}
             />
         </Stack.Navigator>
     )
-
 }

@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
-import React, { useState} from 'react'
-import { auth, dbFirebase } from '../../../.expo/credentials'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { addDoc, collection } from 'firebase/firestore' 
+import { StyleSheet, Text, View, Pressable, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+//import * as tf from '@tensorflow/tfjs'
+
 
 //Pantalla que muestra los detalles del plan de entrenamiento personalizado
 export default function PlanScreen (props) {
@@ -16,13 +15,38 @@ export default function PlanScreen (props) {
         activityLevel, 
         trainingCalendar 
     } = props.route.params
+
+    const [predictionResult, setPredictionResult] = useState(null)
+
+    const handlePredict = async () => {
+        const userData = {
+            age: parseFloat(age),
+            height: parseFloat(height),
+            weight: parseFloat(weight),
+            fitnessGoals: parseFloat(fitnessGoals),
+            muscleGoals: parseFloat(muscleGoals),
+            physicalLevel: parseFloat(physicalLevel),
+            activityLevel: parseFloat(activityLevel),
+            trainingCalendar: parseFloat(trainingCalendar),
+        };
+    
+        try{
+            const result = await predictRoutine(userData)
+            setPredictionResult(result)
+        } catch(error) {
+            console.error('Error al obtener la predicción', error)
+            Alert.alert('Error', 'No se pudo obtener la predicción')
+        }
+        const result = await predictRoutine(userData);
+        Alert.alert("Resultado de la predicción", `Predicción: ${result}`);
+    };
     
     const handleNavigate = () => {
         // Navega a la siguiente pantalla, pasando el valor capturado
-        props.navigation.navigate('planDetails', { 
+        props.navigation.navigate('planDetails',{
             age,
             fitnessGoals, 
-            muscleGoals, 
+            muscleGoals,  
             height, 
             weight, 
             physicalLevel, 
@@ -32,36 +56,54 @@ export default function PlanScreen (props) {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.buttonContainer}>
+        <View style={styles.container}>   
+            <View
+                style={{alignItems: 'center'}}
+            >
                 <Pressable 
-                    onPress={handleNavigate}
-                    disabled={trainingCalendar.length === 0}
-                    style={[styles.nextButton, activityLevel === '' && styles.disabledButton]}
+                    onPress={handleNavigate} 
+                    style={styles.nextButton} 
                 >
-                    <Text style={styles.textButton}>Continuar</Text>
+                    <Text>Predecir rutina</Text>
                 </Pressable>
             </View>
+            {predictionResult !== null && (
+                <View>
+                    <Text>
+                        Resultado de la IA: {predictionResult.toFixed(2)}
+                    </Text>
+                </View>
+            )}
         </View>
-    )
-
-}
-
+    );
+};
+    
 const styles = StyleSheet.create({
     container: {
-        flex: 1, 
+        flex: 1,
         backgroundColor: '#f5f5f5'
     },
-    buttonContainer: {
-        justifyContent: 'center', 
-        alignItems: 'center',
-        marginTop: 30
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 20,
     },
-    textButton: {
+    input: {
+        height: 40,
+        borderColor: "gray",
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+    },
+    resultContainer: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+    resultText: {
         fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
+        fontWeight: "bold",
     },
+
     nextButton: {
         backgroundColor: '#4745ff',
         padding: 15,
@@ -70,7 +112,4 @@ const styles = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
     },
-    disabledButton: {
-        backgroundColor: '#b0b0b0', 
-    },
-})
+});

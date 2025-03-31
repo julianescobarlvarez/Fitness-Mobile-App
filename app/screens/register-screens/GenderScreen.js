@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, Animated} from 'react-native'
 import React, { useState } from 'react'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { auth, dbFirebase } from '../../../.expo/credentials'
 
 //Pantalla que requiere el género del usuario
 export default function GenderScreen(props) {
@@ -14,13 +16,12 @@ export default function GenderScreen(props) {
     
     // Función para manejar el parpadeo de la imagen seleccionada
     const handlePressIn = (index) => {
-        // Al presionar la imagen, hacemos que se resalte y se anime
         setHighlightedIndex(index)
         
         // Si hay una imagen previamente seleccionada, restaurar su escala a 1
         if (previousIndex !== null && previousIndex !== index) {
             Animated.spring(scale[previousIndex], {
-                toValue: 1,  // Vuelve a su tamaño original
+                toValue: 1,
                 useNativeDriver: true,
             }).start();
         }
@@ -51,10 +52,10 @@ export default function GenderScreen(props) {
         // Actualiza el estado de la imagen seleccionada
         setPreviousIndex(index);
     };
+
     //Se hace el registro en Firebase junto con otros datos del usuario
-    const handleNavigate = () => {
-        console.log('SE ENVÍA O QUÉ HUEGA')
-        props.navigation.navigate('registerService', { email, password, name, gender: gender })
+    const handleNavigate = async() => {
+        props.navigation.navigate('registerService', {email, password, name, gender: gender})
     }
     
     return (

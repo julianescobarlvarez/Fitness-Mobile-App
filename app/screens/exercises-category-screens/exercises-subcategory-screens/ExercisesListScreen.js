@@ -1,129 +1,80 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useEffect } from 'react'
-import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image } from 'react-native'
-import { signOut } from 'firebase/auth'
-import { collection, addDoc, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore'
+import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image, FlatList } from 'react-native'
+import { collection, doc, getDocs } from 'firebase/firestore'
 import { dbFirebase } from '../../../../.expo/credentials'
 
 export default function ExercisesListScreen(props) {
-    
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Ejercicios</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <LinearGradient
-                        colors={['black', '#707070']}
-                        style={styles.subcontainer3}
+                        colors={['#A7C5EB', '#4A90E2']}
+                        style={styles.subcontainer2}
                         start={{ x: 0.4, y: 0 }}
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-lateral-raises.png')}
-                            style={{ 
-                                marginLeft: 10,
-                                borderRadius: 10,
-                                marginRight: 15
-                            }}    
-                        />
-                        <View>
-                            <Text style={styles.text}>Dumbbell Lateral Raise</Text>
-                            <Text style={styles.text}>Series: 3-4</Text>
-                            <Text style={styles.text}>Repeticiones: 10-15</Text>
-                            <Text style={styles.text}>Peso: 4-10</Text>
+                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            style={styles.image} 
+                            resizeMode="contain"
+                        />   
+                        <View style={{alignItems: 'baseline', flex: 1, padding: 15}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Dumbbell Front Raise</Text>
+                            <Text style={{fontSize: 16}}>Sets: 3-4</Text>
+                            <Text style={{fontSize: 16}}>Reps: 8-12</Text>
+                            <Text style={{fontSize: 16}}>Weight: 5-12 kg</Text>
                         </View>
                     </LinearGradient>
                 </View>
                 <View>
                     <LinearGradient
-                        colors={['black', '#707070']}
-                        style={styles.subcontainer3}
+                        colors={['#A7C5EB', '#4A90E2']}
+                        style={styles.subcontainer2}
                         start={{ x: 0.4, y: 0 }}
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-single-lateral-raises.png')}
-                            style={{ 
-                                marginLeft: 10,
-                                borderRadius: 10,
-                                marginRight: 15
-                            }}    
-                        />
-                        <View>
-                            <Text style={styles.text}>Dumbbell Single Lateral Raise</Text>
-                            <Text style={styles.text}>Series: 3-4</Text>
-                            <Text style={styles.text}>Repeticiones: 10-12</Text>
-                            <Text style={styles.text}>Peso: 4-8</Text>
+                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            style={styles.image} 
+                            resizeMode="contain"
+                        />   
+                        <View style={{alignItems: 'baseline', flex: 1, padding: 15}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Dumbbell Military Press</Text>
+                            <Text style={{fontSize: 16}}>Sets: 3-4</Text>
+                            <Text style={{fontSize: 16}}>Reps: 6-10</Text>
+                            <Text style={{fontSize: 16}}>Weight: 8-20 kg</Text>
                         </View>
                     </LinearGradient>
                 </View>
                 <View>
                     <LinearGradient
-                        colors={['black', '#707070']}
-                        style={styles.subcontainer3}
+                        colors={['#A7C5EB', '#4A90E2']}
+                        style={styles.subcontainer2}
                         start={{ x: 0.4, y: 0 }}
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-military-press.png')}
-                            style={{ 
-                                marginLeft: 10,
-                                borderRadius: 10,
-                                marginRight: 15,
-                            }}    
-                        />
-                        <View>
-                            <Text style={styles.text}>Dumbbell Military Press</Text>
-                            <Text style={styles.text}>Series: 3-4</Text>
-                            <Text style={styles.text}>Repeticiones: 6-10</Text>
-                            <Text style={styles.text}>Peso: 8-20</Text>
+                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            style={styles.image} 
+                            resizeMode="contain"
+                        />   
+                        <View style={{alignItems: 'baseline', flex: 1, padding: 15}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Dumbbell Single Lateral Raise</Text>
+                            <Text style={{fontSize: 16}}>Sets: 3-4</Text>
+                            <Text style={{fontSize: 16}}>Reps: 10-12</Text>
+                            <Text style={{fontSize: 16}}>Weight: 4-8 kg</Text>
                         </View>
                     </LinearGradient>
                 </View>
-                <View>
-                    <LinearGradient
-                        colors={['black', '#707070']}
-                        style={styles.subcontainer3}
-                        start={{ x: 0.4, y: 0 }}
-                        end={{ x: 1, y: 0 }}
+                <View style={{alignItems: 'center'}}>
+                    <Pressable 
+                        style={styles.nextButton}     
                     >
-                        <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')}
-                            style={{ 
-                                marginLeft: 10,
-                                borderRadius: 10,
-                                marginRight: 15,
-                            }}    
-                        />
-                        <View>
-                            <Text style={styles.text}>Dumbbell Front Raise</Text>
-                            <Text style={styles.text}>Series: 3-4</Text>
-                            <Text style={styles.text}>Repeticiones: 8-12</Text>
-                            <Text style={styles.text}>Peso: 5-12</Text>
-                        </View>
-                    </LinearGradient>
-                </View>
-                <View>
-                    <LinearGradient
-                        colors={['black', '#707070']}
-                        style={styles.subcontainer3}
-                        start={{ x: 0.4, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                    >
-                        <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-seated-dumbbell-military-press.png')}
-                            style={{ 
-                                marginLeft: 10,
-                                borderRadius: 10,
-                                marginRight: 15,
-                            }}    
-                        />
-                        <View>
-                            <Text style={styles.text}>Seated Dumbbell Military Press</Text>
-                            <Text style={styles.text}>Series: 3-4</Text>
-                            <Text style={styles.text}>Repeticiones: 6-10</Text>
-                            <Text style={styles.text}>Peso: 10-20</Text>
-                        </View>
-                    </LinearGradient>
+                        <Text style={styles.textButton}>Continuar</Text>
+                    </Pressable>
                 </View>
             </ScrollView>
         </View>
@@ -142,11 +93,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 30,
+        marginTop: 15,
         marginBottom: 15,
+    },
+    subcontainer2: {
+        flexDirection: 'row',
+        flexShrink: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 20,
+        borderRadius: 10,
     },
     subcontainer3: {
         flexDirection: 'row',
@@ -154,5 +113,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         borderRadius: 10,
-    }
+    },
+    image: {
+        width: 100,
+        height: 100
+    },
+    textButton: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+    nextButton: {
+        backgroundColor: '#4745ff',
+        padding: 15,
+        marginTop: 20,
+        borderRadius: 5,
+        width: '80%',
+        alignItems: 'center',
+    },
 });

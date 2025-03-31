@@ -62,7 +62,7 @@ export default function ProgressScreen() {
     const [bmi, setBMI] = useState(21.7);
     const [bfp, setBFP] = useState(18)
 
-    // Rango de IMC (puedes ajustar estos valores a lo que necesites)
+    // Rango de IMC
     const minBMI = 15
     const maxBMI = 40
 

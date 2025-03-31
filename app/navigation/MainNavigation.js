@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../../.expo/credentials'
+import { onAuthStateChanged } from 'firebase/auth' //cambiar
+import { auth } from '../../.expo/credentials' //ya no
 
 import MainTabNavigation from './MainTabNavigation'
 import FormNavigation from './FormNavigation'
