@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import MainNavigation from './app/navigation/MainNavigation'
+import MainNavigation from './navigation/MainNavigation'
 import * as NavigationBar from 'expo-navigation-bar'
 
 export default function App() {    

@@ -2,6 +2,7 @@
   "name": "my-app-movil",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -21,8 +22,6 @@
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
     "@shopify/react-native-skia": "^1.6.0",
-    "@tensorflow/tfjs": "^4.22.0",
-    "@tensorflow/tfjs-react-native": "^1.0.0",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
@@ -37,7 +36,7 @@
     "firebase": "^11.0.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongoose": "^8.13.0",
+    "mongoose": "^8.13.1",
     "react": "18.3.1",
     "react-native": "0.76.2",
     "react-native-calendars": "^1.1307.0",
@@ -53,7 +52,8 @@
     "victory-native": "^41.12.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "nodemon": "^3.1.9"
   },
   "private": true
 }

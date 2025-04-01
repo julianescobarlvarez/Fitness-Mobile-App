@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import { Ionicons } from '@expo/vector-icons'
-import { Pressable, Text } from 'react-native'
+//import { Ionicons } from '@expo/vector-icons'
+//import { Pressable, Text } from 'react-native'
 
 import UpperBodyScreen from '../screens/exercises-category-screens/UpperBodyScreen' 
 import CoreScreen from '../screens/exercises-category-screens/CoreScreen'

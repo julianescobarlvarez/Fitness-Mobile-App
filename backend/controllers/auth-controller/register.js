@@ -1,15 +1,14 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import User from'../../models/userModel.js'
+import { secretKey, expiresIn } from '../../config/jwtConfig.js'
 
-const User = require('../models/userModel')
-const { secretKey, expiresIn } = require('../config/jwtConfig')
-
-// Función para registrar un nuevo usuario
+// Función para registrar a un nuevo usuario
 const registerUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe en la base de datos
         const existingUser = await User.findOne({ email })
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' })
@@ -37,6 +36,4 @@ const registerUser = async (req, res) => {
     }
 }
 
-module.exports = {
-    registerUser,
-}
+export default registerUser//module.exports = { registerUser }

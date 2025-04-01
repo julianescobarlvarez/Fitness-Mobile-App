@@ -1,9 +1,7 @@
-require('dotenv').config() // Esto carga las variables de entorno del archivo .env
+// Esto carga las variables de entorno del archivo .env
+import dotenv from 'dotenv'
+dotenv.config()
 
-const jwtConfig = {
-    secretKey: process.env.SECRET_KEY, // Usar la variable de entorno
-    expiresIn: '1h',
-}
-
-export default jwtConfig
+export const secretKey = process.env.SECRET_KEY
+export const expiresIn = '1h'
 

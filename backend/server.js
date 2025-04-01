@@ -1,12 +1,11 @@
 import express from 'express'
 import cors from 'cors'
-
-const connectDB = require('./config/db')
-const authRoutes = require('./routes/authRoutes')
+import connectDB from './config/db.js'
+import authRoutes from './routes/authRoutes.js'
 
 // Crear la app de Express
 const app = express()
-const port = 5000;
+const port = 3000;
 
 // Middleware
 app.use(cors())

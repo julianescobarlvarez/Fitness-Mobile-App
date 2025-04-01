@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState} from 'react'
-import { addDoc, collection } from 'firebase/firestore' 
-import { auth, dbFirebase } from '../../../.expo/credentials'
+//import { addDoc, collection } from 'firebase/firestore' 
+import { auth, dbFirebase } from '../../../.expo/credentials' //cambiar
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth' //cambiar
 //import axios from 'axios'
 

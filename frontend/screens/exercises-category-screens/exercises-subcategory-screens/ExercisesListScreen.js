@@ -1,8 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image, FlatList } from 'react-native'
-import { collection, doc, getDocs } from 'firebase/firestore'
-import { dbFirebase } from '../../../../.expo/credentials'
+//import { collection, doc, getDocs } from 'firebase/firestore'
+//import { dbFirebase } from '../../../../.expo/credentials'
 
 export default function ExercisesListScreen(props) {
     return (

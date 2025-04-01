@@ -1,8 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ImageBackground } from 'react-native'
-import { auth } from '../../../.expo/credentials'
-import { signOut } from 'firebase/auth'
+//import { auth } from '../../../.expo/credentials'
+//import { signOut } from 'firebase/auth'
 
 export default function CardioScreen() {
 

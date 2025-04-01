@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { onAuthStateChanged } from 'firebase/auth' //cambiar
-import { auth } from '../../.expo/credentials' //ya no
+import { auth } from '../../.expo/credentials' //cambiar
+import axios from 'axios'
 
 import MainTabNavigation from './MainTabNavigation'
 import FormNavigation from './FormNavigation'
@@ -17,19 +19,46 @@ import ExercisesListScreen from '../screens/exercises-category-screens/exercises
 const Stack = createStackNavigator()
 
 function MainNavigation(){
-    const [user, setUser] = useState(null)
+    const [isAuthenticated, setIsAuthenticated] = useState(null)
     const [loading, setLoading] = useState(true)
 
     //Para saber si el usuario ya se encuentra logueado
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser)
-            setLoading(false)
-        })
-
-        return () => unsubscribe()
-        
-    }, []);
+        // Función para verificar si el usuario está logueado
+        const checkAuthStatus = async () => {
+          try {
+            // Obtener el token almacenado en AsyncStorage
+            const token = await AsyncStorage.getItem('authToken');
+            
+            if (!token) {
+              setIsAuthenticated(false);
+              setLoading(false);
+              return;
+            }
+    
+            // Realizar la solicitud para verificar si el token es válido
+            const response = await axios.get('https://localhost3000/api/auth/check', {
+              headers: {
+                Authorization: `Bearer ${token}`, // Enviar el token en los headers
+              },
+            });
+    
+            // Si el token es válido, actualizar el estado de autenticación
+            if (response.status === 200) {
+              setIsAuthenticated(true);
+            } else {
+              setIsAuthenticated(false);
+            }
+          } catch (error) {
+            console.error('Error al verificar el estado de autenticación:', error);
+            setIsAuthenticated(false);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        checkAuthStatus();
+      }, []);
 
     // Mientras se verifica la autenticación, se muestra una pantalla de carga
     if (loading) {

@@ -2,6 +2,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Ionicons } from '@expo/vector-icons'
 import { Pressable } from 'react-native'
+
 import HomeScreen from '../screens/tab-screens/HomeScreen'
 import ExercisesScreen from '../screens/tab-screens/ExercisesSreen'
 import ProgressScreen from '../screens/tab-screens/ProgressScreen'

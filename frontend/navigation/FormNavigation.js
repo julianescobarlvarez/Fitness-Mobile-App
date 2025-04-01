@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import { Ionicons } from '@expo/vector-icons'
+//import { Ionicons } from '@expo/vector-icons'
 import { Pressable, Text } from 'react-native'
 
 import FitnessGoalsScreen from '../screens/form-screens/FitnessGoalsScreen'

@@ -3,10 +3,7 @@ import mongoose from 'mongoose'
 // Función para conectar a MongoDB
 const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/miapp', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        await mongoose.connect('mongodb://localhost/miappdb')
         console.log('Conexión a MongoDB exitosa')
     } catch (error) {
         console.error('Error de conexión a MongoDB: ', error);
@@ -14,4 +11,4 @@ const connectDB = async () => {
     }
 }
 
-module.exports = connectDB
+export default connectDB//module.exports = connectDB

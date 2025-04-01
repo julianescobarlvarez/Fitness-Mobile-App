@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, Image } from 'react-native'
-import { auth, dbFirebase } from '../../../.expo/credentials'
-import { signOut } from 'firebase/auth'
-import { collection, getDocs } from 'firebase/firestore'
+import { auth, dbFirebase } from '../../../.expo/credentials' //cambiar
+import { signOut } from 'firebase/auth' //cambiar
+import { collection, getDocs } from 'firebase/firestore' //cambiar
 
 export default function ProfileConfigScreen() {
 

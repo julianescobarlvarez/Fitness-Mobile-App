@@ -1,8 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image } from 'react-native'
-import { signOut } from 'firebase/auth'
-import { collection, addDoc, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore'
+//import { signOut } from 'firebase/auth'
+//import { collection, addDoc, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore'
 //import { dbFirebase } from '../../../../.expo/credentials'
 
 export default function RoutinesScreen(props) {

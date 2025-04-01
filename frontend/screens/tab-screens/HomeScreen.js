@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, ScrollView, Image, ImageBackground, BackHandler } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useFocusEffect } from '@react-navigation/native';
-import { collection, doc, getDocs } from 'firebase/firestore' 
-import { auth, dbFirebase } from '../../../.expo/credentials'
+//import { LinearGradient } from 'expo-linear-gradient'
+import { useFocusEffect } from '@react-navigation/native'
+import { collection, doc, getDocs } from 'firebase/firestore' //cambiar
+import { auth, dbFirebase } from '../../../.expo/credentials' //cambiar
 
 export default function HomeScreen(props) {
     const [list, setList] = useState([])

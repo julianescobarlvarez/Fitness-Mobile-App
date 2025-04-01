@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, Animated} from 'react-native'
 import React, { useState } from 'react'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { auth, dbFirebase } from '../../../.expo/credentials'
+//import { doc, getDoc, updateDoc } from 'firebase/firestore'
+//import { auth, dbFirebase } from '../../../.expo/credentials'
 
 //Pantalla que requiere el género del usuario
 export default function GenderScreen(props) {
