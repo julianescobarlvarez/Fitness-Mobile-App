@@ -24,6 +24,8 @@ Para desarrollar este proyecto, se empleó un conjunto de herramientas basado en
 
 Además de la integración del framework Vite para acelerar el desarrollo frontend junto con el framework Tailwind CSS para realizar los diseños CSS directamente en HTML.
 
+<br>
+
 ## Otras Tecnologías empleadas
 * Thunder Client para simular solicitudes HTTP (GET, POST, PUT, DELETE) de la API y hacer pruebas de API Rest.
 * Android Studio con emuladores compatibles de Android para simular dispositivos móviles.
