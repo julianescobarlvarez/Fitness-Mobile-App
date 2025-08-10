@@ -19,10 +19,8 @@ Para desarrollar este proyecto, se empleó un conjunto de herramientas basado en
 * Mongo DB para la base de datos no relacional.
 * Express js, un framework de backend para manejar el servidor.
 * Nodejs, un entorno de trabajo para ejecutar el lenguaje de JavaScript en el servidor.
-* React Native, una framework de frontend multiplataforma para manejar la parte visual de una aplicación. Contempla los lenguajes HTML, CSS y JavaScript para su uso, conocido por su extensión jsx.
+* React Native, una framework de frontend multiplataforma para manejar la parte visual de una aplicación. Contempla métodos que simulan comportamientos estructurados en etiquetas como HTML y de diseño como CSS, que se pueden complementar con JavaScript.
 * Expo, un framework para hacer aplicaciones nativas.
-
-Además de la integración del framework Vite para acelerar el desarrollo frontend junto con el framework Tailwind CSS para realizar los diseños CSS directamente en HTML.
 
 <br>
 
