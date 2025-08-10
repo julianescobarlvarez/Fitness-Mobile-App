@@ -6,12 +6,12 @@ import FitnessGoalsScreen from '../screens/form-screens/FitnessGoalsScreen'
 import MuscleGoalsScreen from '../screens/form-screens/MuscleGoalsScreen'
 import PhysicalLevelScreen from '../screens/form-screens/PhysicalLevelScreen'
 import ActivityLevelScreen from '../screens/form-screens/ActivityLevelScreen'
-import TrainingCalendarScreen from '../screens/form-screens/TrainingCalendarScreen'
+import TrainingFrequencyScreen from '../screens/form-screens/TrainingFrequencyScreen'
 import PlanScreen from '../screens/form-screens/PlanScreen'
-import PlanDetailsScreen from '../screens/form-screens/PlanDetailsScreen'
 import HeightScreen from '../screens/form-screens/HeightScreen'
 import WeightScreen from '../screens/form-screens/WeightScreen'
 import AgeScreen from '../screens/form-screens/AgeScreen'
+import PlanDetailsScreen from '../screens/form-screens/PlanDetailsScreen'
 
 const Stack = createStackNavigator()
 
@@ -33,7 +33,7 @@ const FormNavigation = (props) => (
                         props.navigation.reset({
                             index: 0,
                             routes: [{ name: 'main' }],
-                        });
+                        })
                     }} 
                     style={{ marginRight: 30, marginTop: 5 }}>
                     <Text>Volver</Text>
@@ -70,8 +70,8 @@ const FormNavigation = (props) => (
             component={ActivityLevelScreen}
         />
         <Stack.Screen
-            name="trainingCalendar"
-            component={TrainingCalendarScreen}
+            name="trainingFrequency"
+            component={TrainingFrequencyScreen}
         />
         <Stack.Screen
             name="plan"

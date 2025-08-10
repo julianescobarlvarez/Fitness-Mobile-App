@@ -1,11 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ImageBackground } from 'react-native'
-//import { auth } from '../../../.expo/credentials'
-//import { signOut } from 'firebase/auth'
 
+// Pantalla de la sección Cuerpo Inferior en Ejercicios
 export default function LowerBodyScreen() {
-
     return (
         <View style={styles.container}>
             <View>

@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { onAuthStateChanged } from 'firebase/auth' //cambiar
-import { auth } from '../../.expo/credentials' //cambiar
-import axios from 'axios'
+import { useAuth } from '../context/AuthContext'
 
 import MainTabNavigation from './MainTabNavigation'
 import FormNavigation from './FormNavigation'
@@ -15,56 +12,29 @@ import AuthScreen from '../screens/main-screens/AuthScreen'
 import ExercisesCategoryNavigation from './ExercisesCategoryNavigation'
 import RoutinesScreen from '../screens/exercises-category-screens/exercises-subcategory-screens/RoutinesScreen'
 import ExercisesListScreen from '../screens/exercises-category-screens/exercises-subcategory-screens/ExercisesListScreen'
+import CreatedPlansScreen from '../screens/tab-screens/home-components-screens/CreatedPlansScreen'
+import PlanInfoScreen from '../screens/tab-screens/home-components-screens/PlanInfoScreen'
+import DetailsRoutineScreen from '../screens/pre-routine-screens/DetailsRoutineScreen'
+import TrainingFlowNavigation from './TrainingFlowNavigation'
+import DetailsExerciseScreen from '../screens/pre-routine-screens/DetailsExerciseScreen'
+import WarmUpScreen from '../screens/pruebas-pantallas/WarmUpScreen'
+import ExercisesScreen from '../screens/pruebas-pantallas/ExercisesScreen'
+import StretchingScreen from '../screens/pruebas-pantallas/StretchingScreen'
+import SummaryScreen from '../screens/pruebas-pantallas/SummaryScreen'
+
+
 
 const Stack = createStackNavigator()
 
 function MainNavigation(){
-    const [isAuthenticated, setIsAuthenticated] = useState(null)
-    const [loading, setLoading] = useState(true)
-
-    //Para saber si el usuario ya se encuentra logueado
-    useEffect(() => {
-        // Función para verificar si el usuario está logueado
-        const checkAuthStatus = async () => {
-          try {
-            // Obtener el token almacenado en AsyncStorage
-            const token = await AsyncStorage.getItem('authToken');
-            
-            if (!token) {
-              setIsAuthenticated(false);
-              setLoading(false);
-              return;
-            }
-    
-            // Realizar la solicitud para verificar si el token es válido
-            const response = await axios.get('https://localhost3000/api/auth/check', {
-              headers: {
-                Authorization: `Bearer ${token}`, // Enviar el token en los headers
-              },
-            });
-    
-            // Si el token es válido, actualizar el estado de autenticación
-            if (response.status === 200) {
-              setIsAuthenticated(true);
-            } else {
-              setIsAuthenticated(false);
-            }
-          } catch (error) {
-            console.error('Error al verificar el estado de autenticación:', error);
-            setIsAuthenticated(false);
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        checkAuthStatus();
-      }, []);
+    // Se usa el contexto para obtener el estado
+    const { isAuthenticated, loading } = useAuth()
 
     // Mientras se verifica la autenticación, se muestra una pantalla de carga
     if (loading) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5' }}>
-                <Text> Cargando... </Text>
+                <Text> Cargando.... </Text>
             </View>
         )
     }
@@ -79,8 +49,8 @@ function MainNavigation(){
                 },
             }}
         >
-            {user ? (
-                // Si el usuario está autenticado, mostramos las pantallas con tabs
+            {isAuthenticated ? (
+                // Si el usuario está autenticado, se muestra las pantallas con tabs
                 <>  
                     <Stack.Screen 
                         name="loading" 
@@ -106,7 +76,7 @@ function MainNavigation(){
                     />
                 </>
             ) : (
-                // Si no está autenticado, mostramos las pantallas de welcome y auth
+                // Si no está autenticado, se muestra las pantallas de welcome y auth
                 <>
                     <Stack.Screen
                         name="welcome"
@@ -153,25 +123,76 @@ function MainNavigation(){
             )}
             <Stack.Screen 
                 name="form" 
-                component={FormNavigation} 
+                component={FormNavigation}
                 options={{ 
                     headerShown: false,
                 }}
             />
             <Stack.Screen 
                 name="exercisesCategory" 
-                component={ExercisesCategoryNavigation} 
+                component={ExercisesCategoryNavigation}
                 options={{ 
                     headerShown: false,
                 }}
             />
             <Stack.Screen 
                 name="routines" 
-                component={RoutinesScreen} 
+                component={RoutinesScreen}
             />
             <Stack.Screen 
                 name="exercisesList" 
-                component={ExercisesListScreen} 
+                component={ExercisesListScreen}
+            />
+            <Stack.Screen 
+                name="createdPlans" 
+                component={CreatedPlansScreen}
+            />
+            <Stack.Screen 
+                name="planInfo" 
+                component={PlanInfoScreen}
+            />
+            <Stack.Screen 
+                name="detailsRoutine" 
+                component={DetailsRoutineScreen}
+            />
+            <Stack.Screen 
+                name="exerciseDetails" 
+                component={DetailsExerciseScreen}
+            />
+            <Stack.Screen 
+                name="trainingFlow" 
+                component={TrainingFlowNavigation}
+                options={{ 
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen 
+                name="prueba1" 
+                component={WarmUpScreen}
+                options={{ 
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen 
+                name="prueba2" 
+                component={ExercisesScreen}
+                options={{ 
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen 
+                name="prueba3" 
+                component={StretchingScreen}
+                options={{ 
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen 
+                name="prueba4" 
+                component={SummaryScreen}
+                options={{ 
+                    headerShown: false,
+                }}
             />
         </Stack.Navigator>
     )

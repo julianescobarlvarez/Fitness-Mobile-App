@@ -7,6 +7,7 @@ import HomeScreen from '../screens/tab-screens/HomeScreen'
 import ExercisesScreen from '../screens/tab-screens/ExercisesSreen'
 import ProgressScreen from '../screens/tab-screens/ProgressScreen'
 import ProfileConfigScreen from '../screens/tab-screens/ProfileConfigScreen'
+import HeaderMenu from '../screens/tab-screens/home-components-screens/HeaderMenu'
 
 const Tab = createBottomTabNavigator()
 
@@ -48,7 +49,8 @@ const MainTabNavigation = () => (
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="stopwatch-outline" size={size} color={color} /> // Icono para Home
                 ),
-                gestureEnabled: false,
+                headerRight: () => <HeaderMenu/>,
+                //gestureEnabled: false,
             }}
         />
         <Tab.Screen 

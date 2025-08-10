@@ -1,39 +1,41 @@
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import User from'../../models/userModel.js'
-import { secretKey, expiresIn } from '../../config/jwtConfig.js'
+import createAccessToken from '../../libs/jwt.js'
 
 // Función para registrar a un nuevo usuario
-const registerUser = async (req, res) => {
-    const { email, password } = req.body;
+const register = async (req, res) => {
+    const { email, password, name, gender } = req.body
 
     try {
         // Verificar si el usuario ya existe en la base de datos
         const existingUser = await User.findOne({ email })
+        
+        // Si el correo ya existe en la base de datos, se envía una respuesta con estado 400
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' })
         }
 
-        // Encriptar la contraseña
+        // Se encripta la contraseña
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        // Crear un nuevo usuario
+        // Se crea un nuevo usuario
         const newUser = new User({
             email,
             password: hashedPassword,
+            name,
+            gender,
         })
 
-        // Guardar el usuario en la base de datos
-        await newUser.save()
+        // Se guarda el usuario en la base de datos y le asignamos un token de acceso
+        const userSaved = await newUser.save()
+        const token = await createAccessToken({ id: userSaved._id })
 
-        // Crear un token JWT
-        const token = jwt.sign({ userId: newUser._id }, secretKey, { expiresIn })
+        // Se envia la respuesta con el token en formato json
+        res.json({ token })
 
-        res.status(201).json({ message: 'Usuario registrado exitosamente', token })
     } catch (error) {
-        console.error('Error al registrar usuario: ', error)
         res.status(500).json({ message: 'Error al registrar el usuario', error })
     }
 }
 
-export default registerUser//module.exports = { registerUser }
+export default register

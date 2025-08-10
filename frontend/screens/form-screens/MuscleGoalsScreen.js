@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, Image } from 'react-native'
 import React, { useState} from 'react'
 
-//Pantalla que requiere el grupo muscular de interés del usuario
+// Pantalla que requiere el grupo muscular de interés del usuario
 export default function MuscleGoalsScreen(props) {
-    const { age, fitnessGoals } = props.route.params
+    const { age, fitnessGoals, blockedOptions } = props.route.params
     const [muscleGoals, setMuscleGoals] = useState([])
 
     const options = [
@@ -12,7 +12,8 @@ export default function MuscleGoalsScreen(props) {
         { id: 3, name: 'Abdomen', value: 'abs'},
         { id: 4, name: 'Piernas', value: 'legs'}
     ]
-    
+
+    // Función que maneja las opciones elegidas sobre zonas musculares de interés
     const handleSelection = (nameOption) => {
         setMuscleGoals(prevState => {
           if (prevState.includes(nameOption)) {
@@ -23,18 +24,21 @@ export default function MuscleGoalsScreen(props) {
         })
     }
 
+    // Navega a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(muscleGoals)
         props.navigation.navigate('height', { age, fitnessGoals, muscleGoals: muscleGoals })
     }
+
+    // Filtra las opciones para que no se muestren las bloqueadas
+    const availableOptions = options.filter(option => !blockedOptions.includes(option.value))
 
     return (
         <View style={styles.container}>
             <Text 
                 style={{
                     textAlign: 'center', 
-                    fontSize:25, 
+                    fontSize: 25, 
                     fontWeight: 'bold'
                 }}>
                 Elije tu zona muscular de interés
@@ -44,7 +48,7 @@ export default function MuscleGoalsScreen(props) {
                 style={{height: 300, width: 200, marginHorizontal: 'auto'}}/>
             <View style={styles.nameSection}>
                 <Text style={styles.title}>Selecciona las opciones:</Text>
-                {options.map(option => (
+                {availableOptions.map(option => (
                     <Pressable
                         key={option.id}
                         style={[styles.button, muscleGoals.includes(option.value) && styles.selectedButton]}

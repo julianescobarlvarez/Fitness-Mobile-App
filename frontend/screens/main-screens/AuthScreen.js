@@ -1,21 +1,32 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState} from 'react'
-//import { addDoc, collection } from 'firebase/firestore' 
-import { auth, dbFirebase } from '../../../.expo/credentials' //cambiar
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth' //cambiar
-//import axios from 'axios'
+import { useAuth } from '../../context/AuthContext'
+import validateEmailService from '../../services/validateEmailService'
+import loginService from '../../services/loginService'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
+// Pantalla para el logueo o registro de usuario
 export default function AuthScreen(props) {
     const [registering, setRegistering] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const { setIsAuthenticated } = useAuth()
     
-    //Ingresar los otros datos o estados en otra pantalla (form)
+    // Para hacer una auntenticación asincronica al loguear o registrarse
     const authentication = async() => {
-        
-        if(registering){
-            //Para verificar el registro del usuario    
+        // Se activa si el usuario se esta registrando
+        if(registering){  
             try{
+                // Se crea el objeto email
+                const emailData = {
+                    email: email
+                }
+                
+                // Se envía una consulta al servicio para validar el email entrante
+                const response = await validateEmailService(emailData)
+                console.log(response.data)
+
+                // Se navega a la pantalla siguiente para seguir el registro
                 props.navigation.navigate('userRegister', {
                     screen: 'name',
                     params: {
@@ -23,23 +34,39 @@ export default function AuthScreen(props) {
                         password: password
                     }
                 })
+
             } catch (error){
                 // Verifica el tipo de error para mostrar el mensaje correspondiente
-                if (error.code === 'auth/weak-password') {
-                    Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
-                } else if (error.code === 'auth/email-already-in-use') {
-                    Alert.alert('Error', 'Este correo electrónico ya está en uso');
-                } else if (error.code === 'auth/invalid-email') {
-                    Alert.alert('Error', 'El correo electrónico no es válido');
-                } 
+                Alert.alert('Credenciales inválidas', 'Revisa tus credenciales y reinténtalo')
             }
+        // Se activa si el usuario está iniciando sesión
         } else{
-            //Para verificar el inicio de sesión del usuario
             try{
-                await signInWithEmailAndPassword(auth, email, password)
-                //Alert.alert('Iniciando...', 'accediendo al sistema')
+                // Se crea el objeto usuario con el email y contraseña
+                const userLogin = {
+                    email: email,
+                    password: password
+                }
+
+                // Se envía una consulta al servicio para hacer el inicio de sesión
+                const data = await loginService(userLogin)
+                
+                // Si el inicio de sesión es exitoso, el servidor devolverá un token
+                const token  = data.data.token
+                console.log('Token JWT:', token)
+
+                // Se usa el servicio de AsyncStorage para guardar el token de autenticación
+                await AsyncStorage.setItem('authToken', token)
+                console.log('Se ha llamado al servicio de AsyncStorage con éxito')
+                
+                //Se usa el servicio de AsyncStorage para guarda el email del usuario
+                await AsyncStorage.setItem('emailToken', email)
+                console.log('Se ha llamado al servicio de AsyncStorage con éxito')
+                
+                setIsAuthenticated(true)
+
             } catch (error){
-                Alert.alert('Error', 'No se encuentra esta cuenta en el sistema')
+                Alert.alert('Credenciales inválidas', 'No se encuentra esta cuenta en el sistema')
             }
         }
     }    

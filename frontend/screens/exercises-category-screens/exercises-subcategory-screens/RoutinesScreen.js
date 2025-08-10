@@ -1,17 +1,14 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image } from 'react-native'
-//import { signOut } from 'firebase/auth'
-//import { collection, addDoc, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore'
-//import { dbFirebase } from '../../../../.expo/credentials'
 
+// Pantalla de rutinas con equipamiento y sin equipamiento
 export default function RoutinesScreen(props) {
-    
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Sin equipamento</Text>
-                <View>
+                {/*<Text style={styles.title}>Sin equipamento</Text>*/}
+                {/*<View>
                     <LinearGradient
                         colors={['black', '#707070']}
                         style={styles.subcontainer3}
@@ -41,6 +38,7 @@ export default function RoutinesScreen(props) {
                         <Text style={styles.text}>Rutina 3</Text>
                     </LinearGradient>
                 </View>
+                */}
                 <Text style={styles.title}>Con equipamento</Text>
                 <View
                     onStartShouldSetResponder={() => true} 

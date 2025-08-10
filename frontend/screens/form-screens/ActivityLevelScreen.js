@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, Animated } from 'react-native'
 import React, { useState} from 'react'
 
-//Pantalla que requiere el nivel de actividad rutinaria del usuario
+// Pantalla que requiere el nivel de actividad rutinaria del usuario
 export default function ActivityLevelScreen(props) {
     const { 
         age,
@@ -19,14 +19,13 @@ export default function ActivityLevelScreen(props) {
 
     // Función para manejar el parpadeo de la imagen seleccionada
     const handlePressIn = (index) => {
-        // Al presionar la imagen, hacemos que se resalte y se anime
         setHighlightedIndex(index)
     };
-
+    
+    // Para navegar a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(activityLevel)
-        props.navigation.navigate('trainingCalendar', { 
+        props.navigation.navigate('trainingFrequency', { 
             age,
             fitnessGoals, 
             muscleGoals, 
@@ -50,7 +49,7 @@ export default function ActivityLevelScreen(props) {
                     }
                 ]}
                 onStartShouldSetResponder={() => true}  // Permite que el View reciba el touch
-                onResponderStart={() => handlePressIn(0)} // Activar la animación al tocar el contenedor
+                onResponderStart={() => handlePressIn(0)} // Se activa la animación al tocar el contenedor
                 onResponderRelease={() => setActivityLevel('sedentary')} 
             >
                 <Text style={[styles.containerOptionTitle, highlightedIndex === 0 && { color: 'white'}]}>Sedentario</Text>
@@ -61,7 +60,7 @@ export default function ActivityLevelScreen(props) {
                     highlightedIndex === 1 && { borderColor: '#4745ff', borderRadius: 10, backgroundColor: '#4745ff' }
                 ]}   
                 onStartShouldSetResponder={() => true}  // Permite que el View reciba el touch
-                onResponderStart={() => handlePressIn(1)} // Activar la animación al tocar el contenedor 
+                onResponderStart={() => handlePressIn(1)} // Se activa la animación al tocar el contenedor 
                 onResponderRelease={() => setActivityLevel('active')}  
             >
                 <Text style={[styles.containerOptionTitle, highlightedIndex === 1 && { color: 'white'}]}>Activo</Text>

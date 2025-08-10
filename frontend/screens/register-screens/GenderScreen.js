@@ -1,24 +1,26 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, Animated} from 'react-native'
 import React, { useState } from 'react'
-//import { doc, getDoc, updateDoc } from 'firebase/firestore'
-//import { auth, dbFirebase } from '../../../.expo/credentials'
+import { useAuth } from '../../context/AuthContext'
+import registerService from '../../services/registerService'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-//Pantalla que requiere el género del usuario
+// Pantalla que requiere el género del usuario
 export default function GenderScreen(props) {
     const { email, password, name } = props.route.params
     const [gender, setGender] = useState('')
-    
-    // Usamos un array de Animated.Values para manejar la opacidad de cada imagen
+    const { setIsAuthenticated } = useAuth()
+  
+    // Se usa un array de Animated.Values para manejar la opacidad de cada imagen
     const [opacities, setOpacities] = useState([new Animated.Value(1), new Animated.Value(1)])
     const [scale, setScale] = useState([new Animated.Value(1), new Animated.Value(1)])
     const [highlightedIndex, setHighlightedIndex] = useState(null) 
-    const [previousIndex, setPreviousIndex] = useState(null);
+    const [previousIndex, setPreviousIndex] = useState(null)
     
     // Función para manejar el parpadeo de la imagen seleccionada
     const handlePressIn = (index) => {
         setHighlightedIndex(index)
         
-        // Si hay una imagen previamente seleccionada, restaurar su escala a 1
+        // Si hay una imagen previamente seleccionada, se restaura su escala a 1
         if (previousIndex !== null && previousIndex !== index) {
             Animated.spring(scale[previousIndex], {
                 toValue: 1,
@@ -29,33 +31,63 @@ export default function GenderScreen(props) {
         // Crea una secuencia de animaciones solo para la imagen que se tocó
         Animated.sequence([
             Animated.timing(opacities[index], {
-                toValue: 0, // Desaparece
+                toValue: 0, // Hace que la imagen desaparezca
                 duration: 10,
                 useNativeDriver: true,
             }),
             Animated.timing(opacities[index], {
-                toValue: 1, // Vuelve a aparecer
+                toValue: 1, // Hace que la imagen aparezca
                 useNativeDriver: true,
             }),
         ]).start()
         
-        // Animación de escala (resaltar la imagen)
+        // Animación de escala para hacer resaltar la imagen
         Animated.spring(scale[index], {
-            toValue: 1, // Aumentar el tamaño de la imagen al 120%
+            toValue: 1, // Hace que la imagen aumente el tamaño de la imagen al 120%
             useNativeDriver: true,
         })
         Animated.spring(scale[index], {
-            toValue: 1.3, // Vuelve a su tamaño original
+            toValue: 1.3, // Hace que la imagen vuelva a su tamaño original
             useNativeDriver: true,
         }).start()
 
         // Actualiza el estado de la imagen seleccionada
-        setPreviousIndex(index);
+        setPreviousIndex(index)
     };
 
-    //Se hace el registro en Firebase junto con otros datos del usuario
-    const handleNavigate = async() => {
-        props.navigation.navigate('registerService', {email, password, name, gender: gender})
+    // Para manejar el registro del usuario
+    const handleRegister = async() => {
+        
+        // Crea el objeto de datos del usuario para el registro
+        const userData = {
+            email: email,
+            password: password,
+            name: name,
+            gender: gender,
+        }
+
+        try {
+            // Se llama al servicio para registrar al usuario
+            const data = await registerService(userData)
+
+            // Si el registro fue exitoso, el servidor devolverá un token
+            const token  = data.data.token
+            console.log('Token JWT:', token)
+
+            // Se usa el servicio de AsyncStorage para guardar el token de autenticación
+            await AsyncStorage.setItem('authToken', token)
+            console.log('Se ha llamado al servicio de AsyncStorage con éxito')
+
+            //Se usa el servicio de AsyncStorage para guarda el email del usuario
+            await AsyncStorage.setItem('emailToken', email)
+            console.log('Se ha llamado al servicio de AsyncStorage con éxito')
+
+            setIsAuthenticated(true)
+    
+        } catch (err) {
+            setError(err.message) // Se muestra el error si algo salió mal
+            console.log('error registrado')
+        } 
     }
     
     return (
@@ -100,7 +132,7 @@ export default function GenderScreen(props) {
             <View style={styles.buttonContainer}>
                 <Pressable 
                     disabled={gender === ''} 
-                    onPress={handleNavigate}
+                    onPress={handleRegister}
                     style={[styles.nextButton, gender === '' && styles.disabledButton]}    
                 >
                     <Text style={styles.textButton}>Continuar</Text>

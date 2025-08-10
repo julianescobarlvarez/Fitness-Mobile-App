@@ -1,71 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Pressable, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState, useCallback} from 'react'
+import { View, Text, StyleSheet, Animated, Pressable, ScrollView, TextInput, Modal, Alert } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
+import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import findPlanService from '../../services/findPlanService'
+import BarChart from './progress-components-screens/BarChart'
+import addWeightService from '../../services/addWeightService'
+import patchProgressDataService from '../../services/patchProgressDataService'
 
-// Datos de la gráfica
-const data = [30, 70, 50, 80, 60, 90, 120, 180, 300, 90, 60, 30, 70, 60, 65, 50, 80, 40, 70, 50];
+// Pantalla de progreso
+export default function ProgressScreen(props) {
+    const [plan, setPlan] = useState(null)
+    const [data, setData] = useState([10])
+    const [bmi, setBMI] = useState(1)
+    const [bfp, setBFP] = useState(1)
+    const [isLoading, setIsLoading] = useState(true)
+    const [fadeAnim] = useState(new Animated.Value(0))
+    const [weight, setWeight] = useState('60')
+    const [menuVisible, setMenuVisible] = useState(false)
+    const [email, setEmail] = useState(null)
+    const [refreshKey, setRefreshKey] = useState(0)
 
-// Componente para la gráfica de barras
-const BarChart = ({ data }) => {
-    // Encuentra el valor máximo de los datos para ajustar las alturas de las barras
-    const maxValue = Math.max(...data);
-    
-    // Función para generar las marcas del eje Y
-    const generateYAxisLabels = () => {
-        const numberOfTicks = 6; // Número de marcas en el eje Y
-        const step = Math.ceil(maxValue / numberOfTicks);
-        let labels = [];
-        
-        for (let i = 0; i <= maxValue; i += step) {
-            labels.push(maxValue - i);
-        }
-        
-        return labels;
-    };
+    useFocusEffect(
+        useCallback(() => {
+            const actualPlan = async () => {
+                try {
+                    const planId = await AsyncStorage.getItem('planToken')
+                    const email = await AsyncStorage.getItem('emailToken')
 
-    // Genera las etiquetas del eje Y
-    const yAxisLabels = generateYAxisLabels();
+                    if (planId) {
+                        const planData = await findPlanService(planId)
+                        
+                        if (planData) {
+                            const actualPlan = planData.actualPlan
+                            setPlan(actualPlan)
+                            setData(actualPlan.weeklyProgress[0].bodyWeight)
+                            setBMI(actualPlan.weeklyProgress[0].bmi.toFixed(1))
+                            setBFP(actualPlan.weeklyProgress[0].bfp.toFixed(1))
+                        }
+                    }
+                } catch (err) {
+                    console.error(err)
+                } finally {
+                    setIsLoading(false)
+                    Animated.timing(fadeAnim, {
+                        toValue: 1,
+                        duration: 400,
+                        useNativeDriver: true
+                    }).start()
+                }
+            }
+            actualPlan()
+        }, [refreshKey])
+    )
 
-    return (
-        <View style={styles.chartContainer}>
-            {/* Eje Y */}
-            <View style={styles.yAxisContainer}>
-                {yAxisLabels.map((label, index) => (
-                    <Text key={index} style={styles.yAxisLabel}>{label}</Text>
-                ))}
-            </View>
-            <ScrollView
-                horizontal={true} 
-                showsHorizontalScrollIndicator={false}
-            > 
-                {/* Barras de la gráfica */}
-                <View style={styles.barsContainer}>
-                    {data.map((value, index) => {
-                        const barHeight = (value / maxValue) * 200
-                        return (
-                            <View key={index} style={[styles.bar, { height: barHeight }]}>
-                                <Text style={styles.barLabel}>{value}</Text>
-                                <Text key={index} style={styles.xAxisLabel}>{index + 1}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-            </ScrollView>  
-        </View>
-    );
-};
-
-// Componente principal
-export default function ProgressScreen() {
-    
-    // IMC inicial
-    const [bmi, setBMI] = useState(21.7);
-    const [bfp, setBFP] = useState(18)
-
-    // Rango de IMC
+    // Rango de índice de masa corporal
     const minBMI = 15
     const maxBMI = 40
 
+    // Rango de porcentaje de grasa corporal
     const minBFP = 1
     const maxBFP = 40
 
@@ -76,13 +70,14 @@ export default function ProgressScreen() {
     const colorStops = [0, 0.20, 0.45, 0.75, 1]
     const colorStops2 = [0, 0.14, 0.57, 1]
     
-    // Función para calcular la posición del indicador en función del IMC
+    // Función para calcular la posición del indicador en función del IMC/BMI
     const calculateBMIPosition = (bmi) => {
-        return ((bmi - minBMI) / (maxBMI - minBMI)) * 100;
-    };
+        return ((bmi - minBMI) / (maxBMI - minBMI)) * 100
+    }
 
-    const BMIPosition = calculateBMIPosition(bmi);
+    const BMIPosition = calculateBMIPosition(bmi)
 
+    // Para evaluar la respuesta correspondiente al valor de IMC/BMI
     const ifBMIValue = () => {
         if(bmi < 18.5){
             return 'Tu IMC indica que es inferior al rango recomendado.'
@@ -105,23 +100,26 @@ export default function ProgressScreen() {
     }
 
     const calculateBFPPosition = (bfp) => {
-        return ((bfp - minBFP) / (maxBFP - minBFP)) * 100;
+        return ((bfp - minBFP) / (maxBFP - minBFP)) * 100
     }
 
+    const BFPPosition = calculateBFPPosition(bfp)
+
+    // Para evaluar la respuesta correspondiente al valor de BFP
     const ifBFPValue = () => {
-        if(bmi < 6){
+        if(bfp < 6){
             return 'Tu porcentaje de grasa corporal es más bajo que el de un atleta.'
         }
-        if(bmi >= 6 && bmi <= 13){
+        if(bfp >= 6 && bfp <= 13){
             return 'Estás en el rango común de un deportista de alto rendimiento.'
         }
-        if(bmi >= 14 && bmi <= 17){
+        if(bfp >= 14 && bfp <= 17){
             return 'Estás en el rango común de una persona activa.'
         }
-        if(bmi >= 18 && bmi <= 24){
+        if(bfp >= 18 && bfp <= 24){
             return 'Estás en el rango común de una persona promedio.'
         }
-        if(bmi >= 25 && bmi <= 31){
+        if(bfp >= 25 && bfp <= 31){
             return 'Estás en el rango común de una persona con sobrepeso.'
         }
         else{
@@ -129,80 +127,164 @@ export default function ProgressScreen() {
         }
     }
 
-    const BFPPosition = calculateBFPPosition(bfp);
+    if (isLoading) {
+        return (
+            <View style={styles.container}>
+            </View>
+        )
+    }
+
+    //Maneja el estado de visibilidad del menu desplegable de opciones
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible)
+    }
+
+    const addUserWeight = async(planId, weight, email) => {
+        //console.log('Plan actual: ', JSON.stringify(planData, null, 2))
+        try {
+            Number(weight.trim())
+            await addWeightService(planId, weight) 
+            await patchProgressDataService(planId, email)
+
+            setRefreshKey(prev => prev + 1)
+            toggleMenu()
+
+        } catch (error) {
+            // Verifica el tipo de error para mostrar el mensaje correspondiente
+            Alert.alert('No se pudo enviar la solicitud')
+        }
+
+    }
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <Text style={styles.titleBar}>Peso semanal</Text>
-            <View style={{borderWidth: 1, borderColor: '#ddd'}}>
-                <BarChart data={data} />
-            </View>    
-            <Text style={styles.titleBMI}>IMC: {bmi}</Text>
-            <View style={styles.bmiContainer}>
-                <View style={styles.barContainer2}>
-                    {/* Barra de progreso con gradiente */}
-                    <LinearGradient
-                        colors={rangeColors}
-                        locations={colorStops}
-                        style={styles.bar2}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                    >
-                    {/* Barra de progreso con gradiente */}
-                    </LinearGradient>
+        <Animated.View style={[styles.container2, { opacity: fadeAnim }]}>   
+            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+                <Text style={styles.titleBar}>Peso semanal</Text>
+                <View style={{borderWidth: 1, borderColor: '#ddd'}}>
+                    <BarChart data={data} />
+                </View>    
+                <Text style={styles.titleBMI}>IMC: {bmi}</Text>
+                <View style={styles.bmiContainer}>
+                    <View style={styles.barContainer2}>
+                        {/* Barra de progreso con gradiente */}
+                        <LinearGradient
+                            colors={rangeColors}
+                            locations={colorStops}
+                            style={styles.bar2}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                        >
+                        {/* Barra de progreso con gradiente */}
+                        </LinearGradient>
 
-                    {/* Indicador triangular */}
-                    <Animated.View
-                        style={[
-                            styles.indicator,
-                            {
-                                left: `${BMIPosition}%`, // Movimiento del indicador
-                            },
-                        ]}
-                    />
+                        {/* Indicador triangular */}
+                        <Animated.View
+                            style={[
+                                styles.indicator,
+                                {
+                                    left: `${BMIPosition}%`, // Movimiento del indicador
+                                },
+                            ]}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.text}>{ifBMIValue()}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={styles.text}>{ifBMIValue()}</Text>
-                </View>
-            </View>
-            <Text style={styles.titleBMI}>PGC: {bfp}%</Text>
-            <View style={styles.bfpContainer}>
-                <View style={styles.barContainer2}>
-                    {/* Barra de progreso con gradiente */}
-                    <LinearGradient
-                        colors={rangeColors2}
-                        locations={colorStops2}
-                        style={styles.bar2}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                    >
-                    {/* Barra de progreso con gradiente */}
-                    </LinearGradient>
+                <Text style={styles.titleBMI}>PGC: {bfp}%</Text>
+                <View style={styles.bfpContainer}>
+                    <View style={styles.barContainer2}>
+                        {/* Barra de progreso con gradiente */}
+                        <LinearGradient
+                            colors={rangeColors2}
+                            locations={colorStops2}
+                            style={styles.bar2}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                        >
+                        {/* Barra de progreso con gradiente */}
+                        </LinearGradient>
 
-                    {/* Indicador triangular */}
-                    <Animated.View
-                        style={[
-                            styles.indicator,
-                            {
-                                left: `${BFPPosition}%`, // Movimiento del indicador
-                            },
-                        ]}
-                    />
+                        {/* Indicador triangular */}
+                        <Animated.View
+                            style={[
+                                styles.indicator,
+                                {
+                                    left: `${BFPPosition}%`, // Movimiento del indicador
+                                },
+                            ]}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.text}>{ifBFPValue()}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={styles.text}>{ifBFPValue()}</Text>
-                </View>
-            </View>
-        </ScrollView>
+                <View style={{marginVertical: 35}}></View>
+            </ScrollView>
+            {plan? (
+                <>
+                    <Pressable 
+                        style={({ pressed }) => [
+                            styles.button2,
+                            pressed && styles.buttonPressed
+                        ]} 
+                        onPress={() => {
+                            setTimeout(() => {
+                                toggleMenu()
+                            }, 100)
+                        }}
+                    >
+                        <Ionicons 
+                            name="scale-sharp"
+                            size={35} 
+                            color={'white'} 
+                        />
+                    </Pressable>
+                    <Modal visible={menuVisible} transparent animationType="fade">
+                        <Pressable 
+                            style={{
+                                backgroundColor: 'rgba(0,0,0,0.5)', 
+                                flex: 1, 
+                                justifyContent: 'flex-end'
+                            }}
+                            onPress={() => toggleMenu()}
+                        >
+                            <Pressable onPress={() => {}}>
+                                <View style={styles.sectionContainer}>
+                                    <Text style={styles.titleBMI}>Peso: </Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={weight}
+                                        onChangeText={setWeight}
+                                        keyboardType="numeric"
+                                    />
+                                    <View style={styles.button3Container}>
+                                        <Pressable 
+                                            style={styles.button3} 
+                                            onPress={() => addUserWeight(plan._id, weight, email)}
+                                        >
+                                            <Text style={styles.textButton3}>Aplicar cambios</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            </Pressable>
+                        </Pressable>
+                    </Modal>
+                </>
+            ):(null)}
+        </Animated.View>
     )
 }
 
-// Estilos
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
         marginHorizontal: 15,
+    },
+        container2: {
+        flex: 1,
+        backgroundColor: '#f5f5f5'
     },
     titleBar: {
         fontSize: 20,
@@ -216,13 +298,6 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginBottom: 15
     },
-    chartContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start',
-        height: 240,
-        padding: 5,
-    },
     bmiContainer: {
         alignItems: 'center',
         backgroundColor: 'white',
@@ -233,39 +308,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         marginBottom: 20
-    },
-    yAxisContainer: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginRight: 10,
-        height: '100%',
-    },
-    yAxisLabel: {
-        color: '#333',
-        fontSize: 12,
-        fontWeight: 'bold',
-        paddingBottom: 12,
-        paddingTop: 2
-    },
-    barsContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        paddingBottom: 20,
-        paddingTop: 5
-    },
-    bar: {
-        width: 25,
-        backgroundColor: '#4f66e4',
-        justifyContent: 'flex-end',
-        marginHorizontal: 5,
-        borderRadius: 2,
-    },
-    barLabel: {
-        color: 'white',
-        fontSize: 12,
-        textAlign: 'center',
-        marginBottom: 5,
     },
     text: {
         marginBottom: 15,
@@ -320,13 +362,55 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    xAxisLabel: {
-        position: 'absolute',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        fontSize: 12,
-        color: '#333',
-        bottom: -20,
-        width: 23
+    button2: {
+        position: 'absolute', 
+        bottom: 15,
+        right: 0,
+        backgroundColor: '#4745ff', 
+        width: 60,
+        height: 60,
+        padding: 10,
+        borderRadius: 15, 
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 3,
+        marginRight: 15
+
     },
-});
+    buttonPressed: {
+        backgroundColor: '#7775ff',
+        transform: [{ scale: 0.98 }],
+        opacity: 0.95
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        marginTop: 4,
+        borderRadius: 6,
+    },
+    button3Container: {
+        justifyContent: 'center', 
+        alignItems: 'center',
+        marginVertical: 30
+    },
+    button3: {
+        backgroundColor: '#4745ff',
+        padding: 15,
+        borderRadius: 5,
+        width: '65%',
+        alignItems: 'center',
+    },
+    textButton3: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+    sectionContainer: {
+        backgroundColor: 'white',
+        height: 300,
+        paddingHorizontal: 15,
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30
+    }
+})

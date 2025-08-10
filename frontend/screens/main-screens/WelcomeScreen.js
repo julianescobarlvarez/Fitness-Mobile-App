@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, ImageBackground } from 'react-native'
 
+// Pantalla de bienvenida
 export default function WelcomeScreen(props) {
 
     return (

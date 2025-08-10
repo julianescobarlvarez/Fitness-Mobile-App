@@ -1,9 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, Alert, ScrollView, Image, FlatList } from 'react-native'
-//import { collection, doc, getDocs } from 'firebase/firestore'
-//import { dbFirebase } from '../../../../.expo/credentials'
 
+//Pantalla con lista de ejercicios en la sección de rutinas para hombros
 export default function ExercisesListScreen(props) {
     return (
         <View style={styles.container}>
@@ -17,7 +16,7 @@ export default function ExercisesListScreen(props) {
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            source={require('../../../assets/dumbell-front-rise.png')} 
                             style={styles.image} 
                             resizeMode="contain"
                         />   
@@ -37,7 +36,7 @@ export default function ExercisesListScreen(props) {
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            source={require('../../../assets/exercises-strength/image/imagen2.png')} 
                             style={styles.image} 
                             resizeMode="contain"
                         />   
@@ -57,7 +56,7 @@ export default function ExercisesListScreen(props) {
                         end={{ x: 1, y: 0 }}
                     >
                         <Image 
-                            source={require('../../../assets/exercises-strength/exercises-strength-image/shoulders-exercise-dumbbell-front-raises.png')} 
+                            source={require('../../../assets/dumbell-single-lateral-rise.png')} 
                             style={styles.image} 
                             resizeMode="contain"
                         />   

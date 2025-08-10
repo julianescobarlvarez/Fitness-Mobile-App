@@ -2,8 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react'
 import { StyleSheet, Text, View, ImageBackground, Image, ScrollView } from 'react-native'
 
+// Pantalla de la sección Cuerpo Superior en Ejercicios
 export default function UpperBodyScreen(props) {
-
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>

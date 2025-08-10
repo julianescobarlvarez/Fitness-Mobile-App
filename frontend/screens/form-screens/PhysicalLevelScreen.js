@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState} from 'react'
 
-//Pantalla que requiere el nivel físico del usuario
+// Pantalla que requiere el nivel físico del usuario
 export default function PhysicalLevelScreen (props) {
     const { age, fitnessGoals, muscleGoals, height, weight } = props.route.params
     const [physicalLevel, setPhysicalLevel] = useState('')
@@ -14,8 +14,8 @@ export default function PhysicalLevelScreen (props) {
         setHighlightedIndex(index)
     };
 
+    // Navega a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(physicalLevel)
         props.navigation.navigate('activityLevel', { 
             age,

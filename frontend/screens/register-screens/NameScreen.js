@@ -1,9 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState} from 'react'
-//import { doc, getDoc, updateDoc } from 'firebase/firestore'
-//import { auth, dbFirebase } from '../../../.expo/credentials'
 
-//Pantalla que requiere el nombre del usuario
+// Pantalla que requiere el nombre del usuario
 export default function NameScreen(props) {
     const { email, password } = props.route.params
     const [name, setName] = useState('')

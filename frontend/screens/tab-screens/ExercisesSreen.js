@@ -2,8 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View, ScrollView, Image } from 'react-native'
 
+// Pantalla de ejercicios
 export default function ExercisesScreen(props) {
-    //Este es la pantalla 2 - Ejercicios y desafíos
     return (
         <View style={styles.container}>
             <View

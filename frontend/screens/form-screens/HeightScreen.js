@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 
-//Pantalla que requiere la altura del usuario
+// Pantalla que requiere la altura del usuario
 export default function HeightScreen(props) {
     const { age, fitnessGoals, muscleGoals } = props.route.params
     const [height, setHeight] = useState(0)
     
+    // Navega a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(height)
         props.navigation.navigate('weight', { age, fitnessGoals, muscleGoals, height: height})
     }

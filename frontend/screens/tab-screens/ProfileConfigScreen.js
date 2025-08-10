@@ -1,20 +1,61 @@
-import React, { useState, useEffect } from 'react'
-import { Pressable, StyleSheet, Text, View, Alert, Image } from 'react-native'
-import { auth, dbFirebase } from '../../../.expo/credentials' //cambiar
-import { signOut } from 'firebase/auth' //cambiar
-import { collection, getDocs } from 'firebase/firestore' //cambiar
+import React, { useState, useCallback } from 'react'
+import { Pressable, StyleSheet, Text, View, Alert, Image, Animated } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
+import { useAuth } from '../../context/AuthContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import findUserIdService from '../../services/findUserIdService'
 
-export default function ProfileConfigScreen() {
+// Pantalla del perfil de usuario
+export default function ProfileConfigScreen(props) {
+    const { setIsAuthenticated } = useAuth()
+    const defaultProfile = "../../assets/profile.png"
+    const [fadeAnim] = useState(new Animated.Value(0))
+    const [refreshKey, setRefreshKey] = useState(0)
+    const [user, setUser] = useState(null)
+    
+    useFocusEffect(
+        useCallback(() => {
+            const actualPlan = async () => {
+                try {
+                    const email = await AsyncStorage.getItem('emailToken')
+                    if(email){
+                        const actualUser = await findUserIdService(email)
+                        setUser(actualUser.user)
+                    }
+                } catch (err) {
+                    console.error(err)
+                } finally {
+                    setIsLoading(false)
+                    Animated.timing(fadeAnim, {
+                        toValue: 1,
+                        duration: 400,
+                        useNativeDriver: true
+                    }).start()
+                }
+            }
+            actualPlan()
+        }, [refreshKey])
+    )
 
+    // Para cerrar sesión en la aplicación
     const handleSignOut = async () => {
         try {
-            await signOut(auth);
+            // Se elimina el token de AsyncStorage
+            await AsyncStorage.removeItem('authToken')
+
+            //Se elimina el email vigente del usuario de AsyncStorage
+            await AsyncStorage.removeItem('emailToken')
+
+            //Se elimina la vigencia de plan del usuario de AsyncStorage
+            await AsyncStorage.removeItem('planToken')
+
+            setIsAuthenticated(false)
+
         } catch (error) {
-            console.error("Error al cerrar sesión: ", error);
-            Alert.alert('Error', 'Hubo un error al cerrar sesión');
+            console.log("Error al cerrar sesión: ", error)
+            Alert.alert('Error', 'Hubo un error al cerrar sesión')
         }
       }
-    //Imagen del perfil con IF(si está vacio [yes], else [no])
     return (
         <View style={styles.container}>
             <View
@@ -25,7 +66,7 @@ export default function ProfileConfigScreen() {
                 }}
             >
                 <Image
-                    source={require("../../assets/profile.png")} 
+                    source={require(defaultProfile)} 
                     style={{ 
                         borderRadius: 10,
                         width: 130, 
@@ -37,7 +78,43 @@ export default function ProfileConfigScreen() {
                         textAlign: 'center',
                         fontWeight: 'bold',
                         fontSize: 20
-                    }}>Angelo</Text>
+                    }}>Julian</Text>
+            </View>
+            <View style={styles.challengeContainer}>
+                <Text style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontWeight: 'bold'
+                }}>Desafíos completados</Text>
+                <View 
+                style={styles.challengeSubContainer}>
+                    <Image
+                        source={require("../../assets/medals/beginner-medal.png")} 
+                        style={{ 
+                            width: 50, 
+                            height: 50,
+                        }}
+                    />
+                    <Image
+                        source={require("../../assets/medals/intermediate-medal.png")} 
+                        style={{ 
+                            width: 50, 
+                            height: 50,
+                        }}
+                    />
+                    <Image
+                        source={require("../../assets/medals/advance-medal.png")} 
+                        style={{ 
+                            width: 50, 
+                            height: 50,
+                        }}
+                    />
+                </View>
+                <View style={styles.medalContainer}>
+                    <Text style={{fontSize: 18, paddingVertical: 10}}>{user == null ? 0 : user.beginnerMedal}</Text>
+                    <Text style={{fontSize: 18, paddingVertical: 10}}>{user == null ? 0 : user.intermediateMedal}</Text>
+                    <Text style={{fontSize: 18, paddingVertical: 10}}>{user == null ? 0 : user.advanceMedal}</Text>
+                </View>
             </View>
             <View style={styles.container2}>
                 <Pressable onPress={handleSignOut} style={styles.buttonContainer2}>
@@ -95,4 +172,4 @@ const styles = StyleSheet.create({
         paddingHorizontal: 35, 
         justifyContent: 'space-between'
     }
-});
+})

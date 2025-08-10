@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable, AlertImage, Image } from 'react-native'
 import React, { useState } from 'react'
 
-//Pantalla que requiere el objetivo fitness del usuario
+// Pantalla que requiere el objetivo fitness del usuario
 export default function FitnessGoalsScreen(props) {
     const { age } = props.route.params
     const [fitnessGoals, setFitnessGoals] = useState('')
@@ -11,14 +11,21 @@ export default function FitnessGoalsScreen(props) {
 
     // Función para manejar el parpadeo de la imagen seleccionada
     const handlePressIn = (index) => {
-        // Al presionar la imagen, hacemos que se resalte y se anime
         setHighlightedIndex(index)
     };
 
+    // Navega a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(fitnessGoals)
-        props.navigation.navigate('muscleGoals', { age, fitnessGoals: fitnessGoals })
+        if (fitnessGoals == 'lose weight'){
+            props.navigation.navigate('height', { age, fitnessGoals: fitnessGoals, muscleGoals: [] })
+        }
+        else if (fitnessGoals == 'muscle mass'){
+            props.navigation.navigate('muscleGoals', { age, fitnessGoals: fitnessGoals, blockedOptions : ['abs'] })
+        }
+        else{
+            props.navigation.navigate('muscleGoals', { age, fitnessGoals: fitnessGoals, blockedOptions : [] })
+        }
     }
 
     return (
@@ -81,7 +88,7 @@ export default function FitnessGoalsScreen(props) {
                 onResponderStart={() => handlePressIn(2)}
                 onResponderRelease={() => setFitnessGoals('be strong')}
             >
-                <Text style={[styles.text, highlightedIndex === 2 && { color: 'white'}]}>Aumentar fuerza</Text>
+                <Text style={[styles.text, highlightedIndex === 2 && { color: 'white'}]}>Fuerza corporal</Text>
                 <Pressable 
                     onPress={() => setFitnessGoals('be strong')}
                     onPressIn={() => handlePressIn(2)}
@@ -97,6 +104,12 @@ export default function FitnessGoalsScreen(props) {
                 </Pressable>
             </View>
             <View style={styles.buttonContainer}> 
+                {fitnessGoals == 'muscle mass' ? (
+                    <Text style={styles.text2}>
+                        Se requiere un peso externo (mancuernas, discos, bidón de agua, etc.) 
+                        para una correcta hipertrofia
+                    </Text>
+                ): null}
                 <Pressable 
                     disabled={fitnessGoals === ''} 
                     onPress={handleNavigate}
@@ -145,6 +158,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 10, 
         borderRadius: 10, 
+    },
+    text2:{
+        fontSize: 15,
+        color: 'black',
+        marginHorizontal: 15
     },
     textButton: {
         fontSize: 18,

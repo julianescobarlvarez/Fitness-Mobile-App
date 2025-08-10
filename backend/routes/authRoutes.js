@@ -1,13 +1,17 @@
-//Importación de express y modulos login y register
-import express from 'express'
-import { loginUser, registerUser } from '../controllers/auth-controller/index.js'
+import { Router } from 'express'
+import controllers from '../controllers/auth-controller/index.js'
+import validateEmail from '../services/validateEmail.js'
 
-const router = express.Router()
-
-//Ruta para loguear al usuario
-router.post('/login', loginUser)
+const { register, login } = controllers
+const router = Router()
 
 // Ruta para registrar un nuevo usuario
-router.post('/register', registerUser)
+router.post('/register', register)
 
-export default router//module.exports = router
+//Ruta para loguear al usuario
+router.post('/login', login)
+
+//Ruta para validar el email de un usuario
+router.post('/validateEmail', validateEmail)
+
+export default router

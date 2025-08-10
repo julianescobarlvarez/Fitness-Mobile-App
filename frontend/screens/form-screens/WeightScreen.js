@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Alert, PanResponder} from 'react-native'
 import React, { useState } from 'react'
 
-//Pantalla que requiere la altura y peso del usuario
+// Pantalla que requiere la altura y peso del usuario
 export default function WeightScreen(props) {
     const { age, fitnessGoals, muscleGoals, height } = props.route.params
     const [weight, setWeight] = useState(0)
     
+    // Navega a la siguiente pantalla, pasando los valores capturados
     const handleNavigate = () => {
-        // Navega a la siguiente pantalla, pasando el valor capturado
         console.log(weight)
         props.navigation.navigate('physicalLevel', { age, fitnessGoals, muscleGoals, height, weight: weight})
 

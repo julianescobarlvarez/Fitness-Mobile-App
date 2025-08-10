@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, TextInput, Pressable} from 'react-native'
 import React, { useState } from 'react'
 
-//Pantalla que requiere la edad del usuario
+// Pantalla que requiere la edad del usuario
 export default function AgeScreen(props) {
     const [age, setAge] = useState(0)
 
+    // Navegar a la siguiente pantalla, pasando el valor capturado
     const handleNavigate = () => {
-        // Navegar a la siguiente pantalla, pasando el valor capturado
         console.log(age)
         props.navigation.navigate('fitnessGoals', { age: age })
     }

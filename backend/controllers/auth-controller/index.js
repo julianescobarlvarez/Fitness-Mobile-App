@@ -1,7 +1,6 @@
-//Importar los controladores de login y register
-import loginUser from './login.js'
-import registerUser from './register.js'
+//Se importan y exportan los controladores simultáneamente para las rutas
+import register from './register.js'
+import login from './login.js'
 
-//Exportar los modulos
-export {loginUser, registerUser}
+export default { register, login }
 
